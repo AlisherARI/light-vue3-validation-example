@@ -7,7 +7,7 @@
         </div>
         <div class="col-auto">
           <a
-            href="https://github.com/AlisherARI/simple-vue3-validation"
+            href="https://github.com/AlisherARI/light-vue3-validation"
             target="_blank"
             rel="noreferrer noopener nofollow"
             class="text-decoration-none navbar-brand"
