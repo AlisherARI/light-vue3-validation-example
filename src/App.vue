@@ -60,11 +60,15 @@
             placeholder="...."
           />
           <div class="py-2 px-3 bg-light">
-            <code>{{ phoneExample }}</code>
+            <code>
+              <pre>{{ phoneExample }}</pre>
+            </code>
           </div>
         </div>
         <div class="col-12 col-md mb-3">
-          <pre>{{ phone }}</pre>
+          <code>
+            <pre>{{ phone }}</pre>
+          </code>
         </div>
       </div>
       <hr class="mb-4" />
@@ -81,11 +85,15 @@
             placeholder="...."
           />
           <div class="py-2 px-3 bg-light">
-            <code>{{ loginDataExample.email }}</code>
+            <code>
+              <pre>{{ loginDataExample.email }}</pre>
+            </code>
           </div>
         </div>
         <div class="col-12 col-md mb-3">
-          <pre>{{ loginData.email }}</pre>
+          <code>
+            <pre>{{ loginData.email }}</pre>
+          </code>
         </div>
       </div>
       <div class="row w-100">
@@ -99,11 +107,15 @@
             placeholder="...."
           />
           <div class="py-2 px-3 bg-light">
-            <code>{{ loginDataExample.password }}</code>
+            <code>
+              <pre>{{ loginDataExample.password }}</pre>
+            </code>
           </div>
         </div>
         <div class="col-12 col-md mb-3">
-          <pre>{{ loginData.password }}</pre>
+          <code>
+            <pre>{{ loginData.password }}</pre>
+          </code>
         </div>
       </div>
       <hr class="mb-4" />
@@ -119,69 +131,134 @@
             placeholder="...."
           />
           <div class="py-2 px-3 bg-light">
-            <code>{{ dateExample }}</code>
+            <code>
+              <pre>{{ dateExample }}</pre>
+            </code>
           </div>
         </div>
         <div class="col-12 col-md mb-3">
-          <pre>{{ date }}</pre>
+          <code>
+            <pre>{{ date }}</pre>
+          </code>
+        </div>
+      </div>
+      <hr class="mb-4" />
+
+      <div class="row w-100">
+        <div class="col-12 col-md mb-3">
+          <div class="mb-4">
+            <label for="userNameFormControl" class="form-label">Name</label>
+            <input
+              v-model="user.name.model"
+              type="text"
+              class="form-control mb-4"
+              id="userNameFormControl"
+              placeholder="...."
+            />
+          </div>
+          <div class="mb-4">
+            <label for="userAgeFormControl" class="form-label">Age</label>
+            <input
+              v-model="user.age.model"
+              type="number"
+              class="form-control mb-4"
+              id="userAgeFormControl"
+              placeholder="...."
+            />
+          </div>
+          <div class="mb-4">
+            <label for="userIncomeFormControl" class="form-label">Income</label>
+            <input
+              v-model="user.income.model"
+              type="number"
+              class="form-control mb-4"
+              id="userIncomeFormControl"
+              placeholder="...."
+            />
+          </div>
+          <div class="py-2 px-3 bg-light">
+            <code>
+              <pre>{{ userExample }}</pre>
+            </code>
+          </div>
+        </div>
+        <div class="col-12 col-md mb-3">
+          <code>
+            <pre>{{ user }}</pre>
+          </code>
         </div>
       </div>
     </form>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from "vue";
-import { validateRef } from "light-vue3-validation";
+<script setup lang="ts">
+import { reactive } from "vue";
+import { useValidate, useValidateObject } from "light-vue3-validation";
 
-export default defineComponent({
-  name: "App",
-  setup() {
-    const phone = validateRef("", [
-      "required",
-      { type: "minLength", value: 12 },
-    ]);
-    const loginData = reactive({
-      email: validateRef("", [
-        "required",
-        "email",
-        { type: "minLength", value: 10 },
-      ]),
-      password: validateRef("", [
-        "required",
-        { type: "maxLength", value: 16 },
-        { type: "minLength", value: 6 },
-      ]),
-    });
-    const date = validateRef("", ["required", "date"]);
-    const phoneExample = `<input .. type="tel". v-model="phone.model" ... />`;
-    const loginDataExample = {
-      email: `<input ... type="email" v-model="loginData.email.model" ... />`,
-      password: `<input ... type="password" v-model="loginData.password.model" ... />`,
-    };
-    const dateExample = `<input ... type="date" v-model="date.model" ... />`;
-    const setupExample = `
-    setup () {
+type TUser = {
+  name: string;
+  age: number;
+  income: string;
+};
 
-      const phone = validateRef("", ["required", { type: "minLength", value: 12 }]);
-
-      const loginData = reactive({
-        email: validateRef("", ["required", "email", { type: "minLength", value: 10 }]),
-        password: validateRef("", ["required", { type: "maxLength", value: 16 }, { type: "minLength", value: 6 }]),
-      });
-
-      const date = validateRef("", ["required", "date"]);
-    }`;
-
-    return {
-      setupExample,
-      phoneExample,
-      loginDataExample,
-      dateExample,
-      phone,
-      loginData,
-      date,
-    };
+const phone = useValidate("", ["required", { type: "minLength", value: 12 }]);
+const loginData = reactive({
+  email: useValidate("", [
+    "required",
+    "email",
+    { type: "minLength", value: 10 },
+  ]),
+  password: useValidate("", [
+    "required",
+    { type: "maxLength", value: 16 },
+    { type: "minLength", value: 6 },
+  ]),
+});
+const date = useValidate<string>("", ["required", "date"]);
+const user = useValidateObject<TUser>({
+  name: { model: "", rules: ["required"] },
+  age: { model: "", rules: ["required", "numeric"] },
+  income: {
+    model: "",
+    rules: ["required", "numeric", { type: "maxValue", value: 10000 }],
   },
 });
+
+const phoneExample = `<input ... type="tel". v-model="phone.model" ... />`;
+const loginDataExample = {
+  email: `<input ... type="email" v-model="loginData.email.model" ... />`,
+  password: `<input ... type="password" v-model="loginData.password.model" ... />`,
+};
+const dateExample = `<input ... type="date" v-model="date.model" ... />`;
+const userExample = `
+<form>
+  <input ... type="text" v-model="user.name.model" ... />
+  <input ... type="number" v-model="user.age.model" ... />
+  <input ... type="number" v-model="user.income.model" ... />
+</form>
+`;
+const setupExample = `
+    setup () {
+      type User = {
+        name: string
+        age: number
+        income: number
+      }
+
+      const phone = useValidate<number>("", ["required", { type: "minLength", value: 12 }]);
+
+      const loginData = reactive({
+        email: useValidate<string>("", ["required", "email", { type: "minLength", value: 10 }]),
+        password: useValidate<string>("", ["required", { type: "maxLength", value: 16 }, { type: "minLength", value: 6 }]),
+      });
+
+      const date = useValidate<string | Date>("", ["required", "date"]);
+
+      const user = useValidateObject<User>({
+        name: { model: '', rules: ['required'] },
+        age: { model: '', rules: ['required', 'numeric'] },
+        income: { model: '', rules: ['required', 'numeric', { type: 'maxValue', value: 10000 }] }
+      })
+    }`;
 </script>
